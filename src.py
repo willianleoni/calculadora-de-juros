@@ -22,9 +22,7 @@ def calcular_emprestimo():
 
 # Criar a janela principal
 root = tk.Tk()
-
-
-root.title("Calculadora de Empréstimo")
+root.title("Calculadora de Empréstimo ")
 
 # Aplicar estilo aos widgets usando ttk
 style = ttk.Style()
@@ -52,12 +50,23 @@ calcular_button.grid(row=3, column=0, columnspan=2, pady=20)
 resultado_label = ttk.Label(content_frame, text="", anchor="w", font=("Helvetica", 12))
 resultado_label.grid(row=4, column=0, columnspan=2, pady=10, sticky="w")
 
+# Adicionar rodapé
+footer_frame = ttk.Frame(root, padding="10")
+footer_frame.grid(row=1, column=0, sticky="ew")
+
+footer_label = ttk.Label(footer_frame, text="Developed by Willian Leoni", anchor="center", font=("Helvetica", 10))
+footer_label.pack()
+
 # Redimensionar as células da grade para se ajustarem ao conteúdo
 for child in content_frame.winfo_children():
     child.grid_configure(padx=5, pady=5)
 
 # Redimensionar a janela principal para se ajustar ao conteúdo
 root.resizable(False, False)
+
+# Configurar a grid da janela principal para redimensionamento adequado
+root.grid_rowconfigure(0, weight=1)
+root.grid_columnconfigure(0, weight=1)
 
 # Iniciar o loop principal da interface gráfica
 root.mainloop()
