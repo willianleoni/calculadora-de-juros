@@ -1,72 +1,75 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 
-def calcular_parcela(valor_total, meses, juros_mensal):
-    juros_decimal = juros_mensal / 100.0
-    parcela = (valor_total * juros_decimal) / (1 - (1 + juros_decimal) ** -meses)
-    return parcela
+class CalculadoraEmprestimo:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Calculadora de Empréstimo")
 
-def calcular_emprestimo():
-    try:
-        valor_emprestado = float(valor_emprestado_entry.get())
-        meses = int(meses_entry.get())
-        juros_mensal = float(juros_mensal_entry.get())
+        # Aplicar estilo aos widgets usando ttk
+        style = ttk.Style()
+        style.theme_use('clam')  # Escolha um tema suportado pelo ttk
 
-        valor_parcela = calcular_parcela(valor_emprestado, meses, juros_mensal)
-        valor_total_emprestimo = valor_parcela * meses
+        # Criar e posicionar os widgets na janela
+        content_frame = ttk.Frame(self.root, padding="20")
+        content_frame.grid(row=0, column=0, sticky="nsew")
 
-        resultado_label.config(text=f"Valor da parcela mensal: R$ {valor_parcela:.2f}\n"
-                                    f"Valor total do empréstimo: R$ {valor_total_emprestimo:.2f}")
-    except ValueError:
-        messagebox.showerror("Erro", "Certifique-se de inserir valores numéricos válidos.")
+        ttk.Label(content_frame, text="Valor Total do Empréstimo:").grid(row=0, column=0, pady=15, sticky="w")
+        self.valor_emprestado_entry = ttk.Entry(content_frame, width=20)
+        self.valor_emprestado_entry.grid(row=0, column=1, pady=10)
 
-# Criar a janela principal
-root = tk.Tk()
-root.title("Calculadora de Empréstimo ")
+        ttk.Label(content_frame, text="Quantidade de Meses:").grid(row=1, column=0, pady=10, sticky="w")
+        self.meses_entry = ttk.Entry(content_frame, width=20)
+        self.meses_entry.grid(row=1, column=1, pady=10)
 
-# Aplicar estilo aos widgets usando ttk
-style = ttk.Style()
-style.theme_use('clam')  # Escolha um tema suportado pelo ttk
+        ttk.Label(content_frame, text="Taxa de Juros ao Mês (%):").grid(row=2, column=0, pady=10, sticky="w")
+        self.juros_mensal_entry = ttk.Entry(content_frame, width=20)
+        self.juros_mensal_entry.grid(row=2, column=1, pady=10)
 
-# Criar e posicionar os widgets na janela
-content_frame = ttk.Frame(root, padding="20")
-content_frame.grid(row=0, column=0, sticky="nsew")
+        calcular_button = ttk.Button(content_frame, text="Calcular", command=self.calcular_emprestimo)
+        calcular_button.grid(row=3, column=0, columnspan=2, pady=20)
 
-ttk.Label(content_frame, text="Valor Total do Empréstimo:").grid(row=0, column=0, pady=15, sticky="w")
-valor_emprestado_entry = ttk.Entry(content_frame, width=20)
-valor_emprestado_entry.grid(row=0, column=1, pady=10)
+        self.resultado_label = ttk.Label(content_frame, text="", anchor="w", font=("Helvetica", 12))
+        self.resultado_label.grid(row=4, column=0, columnspan=2, pady=10, sticky="w")
 
-ttk.Label(content_frame, text="Quantidade de Meses:").grid(row=1, column=0, pady=10, sticky="w")
-meses_entry = ttk.Entry(content_frame, width=20)
-meses_entry.grid(row=1, column=1, pady=10)
+        # Adicionar rodapé
+        footer_frame = ttk.Frame(self.root, padding="10")
+        footer_frame.grid(row=1, column=0, sticky="ew")
 
-ttk.Label(content_frame, text="Taxa de Juros ao Mês (%):").grid(row=2, column=0, pady=10, sticky="w")
-juros_mensal_entry = ttk.Entry(content_frame, width=20)
-juros_mensal_entry.grid(row=2, column=1, pady=10)
+        footer_label = ttk.Label(footer_frame, text=" ", anchor="center", font=("Helvetica", 10))
+        footer_label.pack()
 
-calcular_button = ttk.Button(content_frame, text="Calcular", command=calcular_emprestimo)
-calcular_button.grid(row=3, column=0, columnspan=2, pady=20)
+        # Redimensionar as células da grade para se ajustarem ao conteúdo
+        for child in content_frame.winfo_children():
+            child.grid_configure(padx=5, pady=5)
 
-resultado_label = ttk.Label(content_frame, text="", anchor="w", font=("Helvetica", 12))
-resultado_label.grid(row=4, column=0, columnspan=2, pady=10, sticky="w")
+        # Redimensionar a janela principal para se ajustar ao conteúdo
+        self.root.resizable(False, False)
 
-# Adicionar rodapé
-footer_frame = ttk.Frame(root, padding="10")
-footer_frame.grid(row=1, column=0, sticky="ew")
+        # Configurar a grid da janela principal para redimensionamento adequado
+        self.root.grid_rowconfigure(0, weight=1)
+        self.root.grid_columnconfigure(0, weight=1)
 
-footer_label = ttk.Label(footer_frame, text="Developed by Willian Leoni", anchor="center", font=("Helvetica", 10))
-footer_label.pack()
+    def calcular_parcela(self, valor_total, meses, juros_mensal):
+        juros_decimal = juros_mensal / 100.0
+        parcela = (valor_total * juros_decimal) / (1 - (1 + juros_decimal) ** -meses)
+        return parcela
 
-# Redimensionar as células da grade para se ajustarem ao conteúdo
-for child in content_frame.winfo_children():
-    child.grid_configure(padx=5, pady=5)
+    def calcular_emprestimo(self):
+        try:
+            valor_emprestado = float(self.valor_emprestado_entry.get())
+            meses = int(self.meses_entry.get())
+            juros_mensal = float(self.juros_mensal_entry.get())
 
-# Redimensionar a janela principal para se ajustar ao conteúdo
-root.resizable(False, False)
+            valor_parcela = self.calcular_parcela(valor_emprestado, meses, juros_mensal)
+            valor_total_emprestimo = valor_parcela * meses
 
-# Configurar a grid da janela principal para redimensionamento adequado
-root.grid_rowconfigure(0, weight=1)
-root.grid_columnconfigure(0, weight=1)
+            self.resultado_label.config(text=f"Valor da parcela mensal: R$ {valor_parcela:.2f}\n"
+                                             f"Valor total do empréstimo: R$ {valor_total_emprestimo:.2f}")
+        except ValueError:
+            messagebox.showerror("Erro", "Certifique-se de inserir valores numéricos válidos.")
 
-# Iniciar o loop principal da interface gráfica
-root.mainloop()
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = CalculadoraEmprestimo(root)
+    root.mainloop()
