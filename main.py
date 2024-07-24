@@ -5,6 +5,7 @@ class Calculator:
     def __init__(self):
         self.root = customtkinter.CTk()
         self.root.title("Calculadora de Juros")
+        self.root.iconbitmap("icone.ico")
         self.root.geometry("300x300")
         self.root.resizable(0, 0)
         
